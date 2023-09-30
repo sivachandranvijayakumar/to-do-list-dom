@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+	<head><title>DOM To Do List</title>
+		
+	</head>
+	<style>
+		#updbtn,#canbtn{
+		display:none;
+		}
+		.active-btn{
+		display:inline-block !important;
+		}
+		.hidebtn{
+		display:none !important;
+		}
+		
+	</style>
+	<body>
+		<div class="userform">
+			<input type="text" id="username" placeholder="Enter your name" autofocus>
+			<button id="addbtn" >AddUser</button>
+			<button id="updbtn" onclick="update()">update</button>
+			<button id="canbtn" onclick="cancelfun()">cancel</button>	
+			
+		</div>		
+		
+		<div id="userlist">
+			
+		</div>
+		
+		
+		<script>
+			let addbtn    = document.getElementById("addbtn");
+			let userinput = document.getElementById("username");
+			let userlist  = document.getElementById("userlist");
+			let updbtn    = document.getElementById("updbtn");
+			let canbtn    = document.getElementById("canbtn");
+			let userdata  = [];
+			let edituserid = 0;
+			
+			
+			//random id generate
+			function unique()
+			{
+				let x = Math.random();
+				return "fab-" + x.toString().split(".")[1];
+				
+			}
+			
+			//add new user
+			function adduser(){
+            let data={
+                id:unique(),
+                username:userinput.value
+            }
+
+            if(data.username!=""){
+                userdata.push(data);
+                userinput.value="";
+            }
+            else{
+                alert('enter a value')
+            }
+            user(userdata);
+			}
+			function user(data)
+			{
+				userlist.innerHTML = "";
+				let createuser = data.map(function(items,index)
+				{
+					return `<div class="useritem">
+				<h2>${items.username}</h2>
+				<button class="edit-btn" onclick="edituser('${items.id}')">edit</button>
+				<button class="del-btn" onclick="deleteuser('${items.id}')">delete</button>
+			</div>`
+			}).join("");
+			userlist.innerHTML = createuser;
+			}
+			function deleteuser(id)
+			{
+			
+			let updateuser = userdata.filter(function(item){
+			return item.id !== id;
+			})
+			userdata = updateuser;
+			user(userdata);
+			
+			}
+			
+			function edituser(id){
+				let edituser = userdata.find(function(item){			
+			if (item.id == id) {
+			
+			userinput.value=item.username;
+			edituserid=id;
+			}
+			})
+			updbtn.classList.add("active-btn");
+			canbtn.classList.add("active-btn");
+			addbtn.classList.add("hidebtn");	
+			}
+			
+			function update(id){
+
+            userdata.map(function(item,index){
+				if(item.id==edituserid){
+                item.username=userinput.value
+				}
+            })
+
+            userinput.value="";
+            user(userdata)
+			updbtn.classList.remove("active-btn");
+			canbtn.classList.remove("active-btn");
+			addbtn.classList.remove("hidebtn");
+			addbtn.classList.add("active-btn");
+			}
+
+			function cancelfun(){
+			userinput.value="";
+			updbtn.classList.remove("active-btn");
+			canbtn.classList.remove("active-btn");
+			addbtn.classList.remove("hidebtn");
+			addbtn.classList.add("active-btn");
+			}
+			//add user event
+			addbtn.addEventListener("click",adduser);
+			
+		</script>
+	</body>
+</html>
